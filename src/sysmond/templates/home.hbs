@@ -1,0 +1,79 @@
+
+    <!doctype html>
+    <html>
+    <head>
+    <title>SYSMOND</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <style>
+
+div[status="inactive"] {
+  background-color: gray;
+}
+div[status="true"] {
+  background-color: green;
+}
+div[status="false"] {
+  background-color: red;
+}
+
+    </style>
+    </head>
+    <body>
+
+        <div class="content">
+            <div class="group">
+
+            </div>
+
+        </div>
+
+    </body>
+
+<template>
+<div class="service" status="inactive">
+    aaa
+  <h2 class="name"></h2>
+  bbb
+</div>
+</template>
+
+
+    <script>
+
+
+var intervalId = setInterval(get_data(), 5000);
+
+
+function update_tabs(data){
+    console.log("Testovaci data")
+    console.log(data);
+    for(element in data) {
+        var service = data[element]
+        if( !$('#'+service['name']).length )         // use this if you are using id to check
+        {
+            var temp = document.getElementsByTagName("template")[0].content.cloneNode(true);
+            $(temp).find(".name").text(service['name'])
+            $(temp).find(".service").attr('id', service['name'])
+            $('.group').append(temp);
+        }
+
+        $('#'+service['name']).attr('status', service['status']['state'])
+    }
+    console.log(data)
+}
+
+function get_data() {
+    $.ajax({
+            url: "/data",
+            method: 'GET',
+            success: function (data) {
+                console.log(data);
+                update_tabs(JSON.parse(data));
+            }
+        });
+}
+
+    </script>
+
+    </html>
