@@ -48,6 +48,7 @@ def update_configs():
             service['context']['service'] = service['context']['host'].service(service['service'])
 
         service['status']['state'] = service['context']['service'].status()
+        print(repr(help(service['context']['service'].status())))
 
 
 
@@ -57,7 +58,7 @@ class MainHandler(tornado.web.RequestHandler):
 
 class DataHandler(tornado.web.RequestHandler):
     def get(self):
-        print(data)
+        #print(data)
         self.write(json.dumps(data, check_circular=False, default=lambda o: '<not serializable>'))
 
 def make_app():
@@ -71,7 +72,7 @@ async def main():
     app = make_app()
     app.listen(8888)
 
-    some_time_period = 5000
+    some_time_period = 2000
     tornado.ioloop.PeriodicCallback(update_configs, some_time_period).start()
 
 

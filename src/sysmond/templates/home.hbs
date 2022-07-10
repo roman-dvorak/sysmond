@@ -7,14 +7,27 @@
 
     <style>
 
+body {
+}
+
+
+.service {
+    width: 200pt;
+    float: left;
+    margin: 4pt;
+    padding: 4pt;
+    border: gray solid 2pt;
+    border-radius: 8pt;
+}
+
 div[status="inactive"] {
   background-color: gray;
 }
 div[status="true"] {
-  background-color: green;
+  background-color: #7bf07b;
 }
 div[status="false"] {
-  background-color: red;
+  background-color: #f05b5b;
 }
 
     </style>
@@ -22,6 +35,8 @@ div[status="false"] {
     <body>
 
         <div class="content">
+            <h2> SYSMOND </h2>
+
             <div class="group">
 
             </div>
@@ -32,35 +47,34 @@ div[status="false"] {
 
 <template>
 <div class="service" status="inactive">
-    aaa
   <h2 class="name"></h2>
-  bbb
+  <div class="service_name"><div>
 </div>
 </template>
 
 
     <script>
 
-
-var intervalId = setInterval(get_data(), 5000);
-
+get_data();
+setInterval(get_data, 1000);
 
 function update_tabs(data){
-    console.log("Testovaci data")
-    console.log(data);
+    //console.log("Testovaci data")
+    //console.log(data);
     for(element in data) {
         var service = data[element]
         if( !$('#'+service['name']).length )         // use this if you are using id to check
         {
             var temp = document.getElementsByTagName("template")[0].content.cloneNode(true);
             $(temp).find(".name").text(service['name'])
+            $(temp).find(".service_name").text(service['service']+"@"+service['host']['ip'])
             $(temp).find(".service").attr('id', service['name'])
             $('.group').append(temp);
         }
 
         $('#'+service['name']).attr('status', service['status']['state'])
     }
-    console.log(data)
+    //console.log(data)
 }
 
 function get_data() {
@@ -68,7 +82,7 @@ function get_data() {
             url: "/data",
             method: 'GET',
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 update_tabs(JSON.parse(data));
             }
         });
