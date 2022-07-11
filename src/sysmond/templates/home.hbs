@@ -20,6 +20,20 @@ body {
     border-radius: 8pt;
 }
 
+.host {
+    width: 200pt;
+    float: left;
+    margin: 4pt;
+    padding: 4pt;
+    border: gray solid 2pt;
+    border-radius: 8pt;
+}
+
+h2 {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+}
+
 div[status="inactive"] {
   background-color: gray;
 }
@@ -37,9 +51,19 @@ div[status="false"] {
         <div class="content">
             <h2> SYSMOND </h2>
 
-            <div class="group">
+            <h3>Zařízení</h3>
+            <div>
+                <div class="hosts" style="display:flex;">
+
+                </div>
+            </div>
+
+            <h3>Systémové služby</h3>
+            <div>
+            <div class="group" style="display:flex;">
 
             </div>
+        </div>
 
         </div>
 
@@ -52,6 +76,12 @@ div[status="false"] {
 </div>
 </template>
 
+<template>
+<div class="host" status="inactive">
+  <h2 class="name"></h2>
+  <div class="ping"><div>
+</div>
+</template>
 
     <script>
 
@@ -61,8 +91,26 @@ setInterval(get_data, 1000);
 function update_tabs(data){
     //console.log("Testovaci data")
     //console.log(data);
-    for(element in data) {
-        var service = data[element]
+    for(host in data['hosts']) {
+        var service = data['hosts'][host]
+        hostname = host.replaceAll('.', '_')
+        if( !$('#'+hostname).length )         // use this if you are using id to check
+        {
+            var temp = document.getElementsByTagName("template")[1].content.cloneNode(true);
+            $(temp).find(".name").text(host)
+            $(temp).find(".ping").text(service)
+            $(temp).find(".host").attr('id', host)
+
+            $('.hosts').append(temp);
+        }
+        //
+
+        $('#'+hostname).find(".ping").text(Math.round(service*1000000)/1000.0)
+        console.log("HOST", hostname, service)
+
+    }
+    for(element in data['data']) {
+        var service = data['data'][element]
         if( !$('#'+service['name']).length )         // use this if you are using id to check
         {
             var temp = document.getElementsByTagName("template")[0].content.cloneNode(true);
